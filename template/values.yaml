@@ -1,0 +1,41 @@
+replicaCount: 1
+
+environment: dev
+
+httpdContainer:
+  name: httpd
+  image:
+    organization: web-proxy
+    name: %%% APPLICATION_NAME %%%-httpd
+  resources: {}
+  environment:
+    ENV_VAR_1: VALUE
+    ENV_VAR_2: VALUE
+  # rest:
+  #   more: yaml
+
+containers:
+- name: %%% APPLICATION_NAME %%%
+  image:
+    organization: extra
+    name: %%% APPLICATION_NAME %%%
+  environment:
+    ENV_VAR_1: VALUE
+    ENV_VAR_2: VALUE
+  # resources: 
+  # livenessProbe: 
+  # readinessProbe: 
+  # rest: 
+
+service:
+  type: NodePort
+  port: 80
+
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
+
+nameOverride: ""
+fullnameOverride: ""

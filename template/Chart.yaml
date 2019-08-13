@@ -1,0 +1,19 @@
+# https://helm.sh/docs/developing_charts/#charts-and-versioning
+# 
+# TL;DR 
+# `version` is the version of the Chart
+# `appVersion` is the version of the underlying application
+# 
+# Further, a `release` of a Chart is distinct from `appVersion` or
+# `version`. A Chart can be released many times, so an installed Chart
+# will have a `release` name associated with it.
+#
+# I don't think we will use the `release` name very much here at
+# organization. I think we will build a new Chart with every build, and
+# installing that same Chart multiple times... I don't think we will
+# do it.
+apiVersion: v1
+appVersion: "1.0"
+description: Example Kubernetes deployment using Helm
+name: %%% APPLICATION_NAME %%%
+version: 0.1.0

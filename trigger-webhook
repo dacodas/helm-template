@@ -1,0 +1,45 @@
+#!/bin/bash
+
+: "${CHART_ARCHIVE:?Variable not set or empty}"
+: "${CONFIG_MAP:?Variable not set or empty}"
+: "${SECRET:?Variable not set or empty}"
+: "${BUILD:?Variable not set or empty}"
+
+DIR=$(mktemp -d)
+FIFO=$DIR/fifo
+mkfifo $FIFO
+
+cat <<EOF > $FIFO & 
+{
+    "build": "${BUILD}",
+    "artifacts": [
+        {
+            "name": "chartArchive",
+            "type": "embedded/base64",
+            "reference": "$(cat "$CHART_ARCHIVE" | base64)"
+        },
+        {
+            "name": "configMap",
+            "type": "embedded/base64",
+            "reference": "$(cat "$CONFIG_MAP" | base64)"
+        },
+        {
+            "name": "secret",
+            "type": "embedded/base64",
+            "reference": "$(cat "$SECRET" | base64)"
+        }
+    ]
+}
+EOF
+
+if [ -z "$1" ]
+then
+    curl -X POST \
+         https://spinnaker-api.organization.org/webhooks/webhook/platformengineeringdemo-dev \
+         -H "Content-type: application/json" \
+         -d"@${FIFO}"
+else
+    cat "$FIFO"
+fi
+
+rm -r $DIR
